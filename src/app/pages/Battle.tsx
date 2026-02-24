@@ -146,7 +146,7 @@ export function Battle() {
                 </div>
                 <button
                   onClick={() => useSkill(skill)}
-                  className="w-full mt-3 py-2 px-4 bg-[var(--stride-teal)] text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
+                  className="w-full mt-3 py-2 px-4 bg-[var(--stride-teal)] rounded-lg font-medium hover:opacity-90 transition-opacity text-[var(--stride-blue)]"
                 >
                   Use Skill
                 </button>
