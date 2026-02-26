@@ -1,13 +1,54 @@
+import { useState } from 'react';
 import { Link } from 'react-router';
 import { Swords, Wind, Smile, BookOpen, Users, Plus, ChevronRight } from 'lucide-react';
 import { monsters, squads } from '../data/mockData';
 import { Card } from '../components/ui/card';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../components/ui/dialog';
 import logo from 'figma:asset/d3f255a78e1c466f832592f023390aaf9040deba.png';
 
 export function Home() {
   const todayMonster = monsters[0];
   const activeSquad = squads[0];
-  const stressLevel = 3;
+  const [stressLevel, setStressLevel] = useState(3);
+  const [showStressDialog, setShowStressDialog] = useState(false);
+  const [previousStressLevel, setPreviousStressLevel] = useState(3);
+
+  const handleStressUpdate = (newLevel: number) => {
+    setPreviousStressLevel(stressLevel);
+    setStressLevel(newLevel);
+    setShowStressDialog(true);
+  };
+
+  const getStressResponse = () => {
+    if (newLevel < previousStressLevel) {
+      return {
+        emoji: '🌤️',
+        title: 'Glad you\'re feeling better',
+        message: 'What helped you feel better?',
+        action: 'Log what helped',
+        actionLink: '/quick-journal'
+      };
+    } else if (newLevel > previousStressLevel) {
+      return {
+        emoji: '🫂',
+        title: 'Things feel harder right now',
+        message: 'Would grounding help?',
+        action: 'Try Grounding',
+        actionLink: '/quick-grounding'
+      };
+    } else {
+      return {
+        emoji: '👍',
+        title: 'Stress level updated',
+        message: 'Thanks for checking in',
+        action: null,
+        actionLink: null
+      };
+    }
+  };
+
+  const newLevel = stressLevel;
+  const response = getStressResponse();
 
   return (
     <div className="max-w-lg mx-auto p-4 space-y-6">
@@ -17,24 +58,29 @@ export function Home() {
           <img src={logo} alt="STRIDE" className="w-12 h-12" />
           <div>
             <h1 className="text-2xl font-semibold mb-1">Good afternoon! 👋</h1>
-            <div className="flex items-center gap-2">
-              <span style={{ color: 'var(--stride-gray)' }}>Stress Level:</span>
+            <button 
+              onClick={() => setShowStressDialog(true)}
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            >
+              <span className="text-sm" style={{ color: 'var(--stride-gray)' }}>Stress Level:</span>
               <div className="flex gap-1">
-                {[1, 2, 3, 4, 5].map((level) => (
+                {[1, 2, 3, 4].map((level) => (
                   <div
                     key={level}
-                    className={`w-6 h-6 rounded-full ${
-                      level <= stressLevel ? 'bg-[var(--stride-blue)]' : 'bg-gray-200'
+                    className={`w-3 h-3 rounded-full transition-all ${
+                      level <= stressLevel ? 'bg-[var(--stride-blue)]' : 'bg-gray-300'
                     }`}
                   />
                 ))}
               </div>
-            </div>
+            </button>
           </div>
         </div>
-        <div className="w-12 h-12 rounded-full flex items-center justify-center text-white text-xl" style={{ backgroundColor: 'var(--stride-purple)' }}>
-          👤
-        </div>
+        <Link to="/profile">
+          <div className="w-12 h-12 rounded-full flex items-center justify-center text-white text-xl cursor-pointer hover:opacity-90 transition-opacity" style={{ backgroundColor: 'var(--stride-purple)' }}>
+            👤
+          </div>
+        </Link>
       </header>
 
       {/* Today's Monster Card */}
@@ -74,103 +120,59 @@ export function Home() {
         </Link>
       </Card>
 
-      {/* Quick Actions Grid */}
-      <section>
-        <h3 className="text-lg font-semibold mb-3">Quick Actions</h3>
+      {/* Quick Actions for Stressed Users */}
+      <div className="mb-6">
+        <h3 className="font-semibold mb-3">Need Help Right Now?</h3>
         <div className="grid grid-cols-2 gap-3">
-          <button className="p-4 bg-white rounded-xl border-2 hover:border-[var(--stride-blue)] transition-colors flex flex-col items-center gap-2">
-            <Wind className="w-8 h-8" style={{ color: 'var(--stride-blue)' }} />
-            <span className="text-sm font-medium">5-Min Breathing</span>
-          </button>
-          <button className="p-4 bg-white rounded-xl border-2 hover:border-[var(--stride-blue)] transition-colors flex flex-col items-center gap-2">
-            <BookOpen className="w-8 h-8" style={{ color: 'var(--stride-blue)' }} />
-            <span className="text-sm font-medium">Grounding</span>
-          </button>
-          <button className="p-4 bg-white rounded-xl border-2 hover:border-[var(--stride-blue)] transition-colors flex flex-col items-center gap-2">
-            <Smile className="w-8 h-8" style={{ color: 'var(--stride-blue)' }} />
-            <span className="text-sm font-medium">Mood Check</span>
-          </button>
           <Link
-            to="/progress"
-            className="p-4 bg-white rounded-xl border-2 hover:border-[var(--stride-blue)] transition-colors flex flex-col items-center gap-2"
+            to="/quick-breathing"
+            className="block p-4 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl border-2 hover:border-[var(--stride-blue)] transition-all"
           >
-            <BookOpen className="w-8 h-8" style={{ color: 'var(--stride-blue)' }} />
-            <span className="text-sm font-medium">Daily Journal</span>
+            <div className="text-4xl mb-2">🌬️</div>
+            <h4 className="font-semibold text-sm mb-1">5 Mins Breathing</h4>
+            <p className="text-xs" style={{ color: 'var(--stride-gray)' }}>
+              Guided calm
+            </p>
           </Link>
-        </div>
-      </section>
-
-      {/* Active Squad Section */}
-      <section>
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-semibold">Your Squads</h3>
-          <span className="text-sm" style={{ color: 'var(--stride-gray)' }}>
-            2 active
-          </span>
-        </div>
-        
-        <Card className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 border-2" style={{ borderColor: 'var(--stride-green)' }}>
-          <div className="flex items-start justify-between mb-3">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-2xl">{activeSquad.emoji}</span>
-                <h4 className="font-semibold">{activeSquad.name}</h4>
-              </div>
-              {activeSquad.currentBattle && (
-                <p className="text-sm" style={{ color: 'var(--stride-gray)' }}>
-                  Battling: {activeSquad.currentBattle.monster}
-                </p>
-              )}
-            </div>
-            <span className="text-xs px-2 py-1 bg-white rounded-full font-medium" style={{ color: 'var(--stride-green)' }}>
-              Battling now!
-            </span>
-          </div>
-
-          {activeSquad.currentBattle && (
-            <div className="mb-3">
-              <div className="w-full h-2 bg-white/50 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[var(--stride-green)] transition-all"
-                  style={{ width: `${activeSquad.currentBattle.progress}%` }}
-                />
-              </div>
-            </div>
-          )}
 
           <Link
-            to={`/squad/${activeSquad.id}`}
-            className="block w-full py-2 px-4 bg-[var(--stride-green)] text-white rounded-lg font-medium text-center hover:opacity-90 transition-opacity text-sm"
+            to="/quick-mood-check"
+            className="block p-4 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl border-2 hover:border-[var(--stride-purple)] transition-all"
           >
-            Join Battle
+            <div className="text-4xl mb-2">😌</div>
+            <h4 className="font-semibold text-sm mb-1">Mood Check</h4>
+            <p className="text-xs" style={{ color: 'var(--stride-gray)' }}>
+              Name your feeling
+            </p>
           </Link>
-        </Card>
-      </section>
 
-      {/* Recent Diary Entry */}
-      <section>
-        <h3 className="text-lg font-semibold mb-3">Yesterday's Battle Log</h3>
-        <Card className="p-4" style={{ backgroundColor: 'var(--stride-diary)' }}>
-          <p className="text-sm mb-2" style={{ color: 'var(--stride-purple)' }}>
-            "5-Minute Launch worked well!"
-          </p>
-          <div className="flex gap-2">
-            <button className="text-xs px-3 py-1 bg-white rounded-full font-medium hover:bg-gray-50 transition-colors">
-              Add Note
-            </button>
-            <Link
-              to="/progress"
-              className="text-xs px-3 py-1 bg-white rounded-full font-medium hover:bg-gray-50 transition-colors"
-            >
-              View Full
-            </Link>
-          </div>
-        </Card>
-      </section>
+          <Link
+            to="/quick-grounding"
+            className="block p-4 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl border-2 hover:border-[var(--stride-green)] transition-all"
+          >
+            <div className="text-4xl mb-2">🌍</div>
+            <h4 className="font-semibold text-sm mb-1">Grounding</h4>
+            <p className="text-xs" style={{ color: 'var(--stride-gray)' }}>
+              Feel present
+            </p>
+          </Link>
 
-      {/* Squad Activity Feed */}
+          <Link
+            to="/quick-journal"
+            className="block p-4 bg-gradient-to-br from-orange-100 to-yellow-100 rounded-xl border-2 hover:border-[var(--stride-orange)] transition-all"
+          >
+            <div className="text-4xl mb-2">📝</div>
+            <h4 className="font-semibold text-sm mb-1">Daily Journal</h4>
+            <p className="text-xs" style={{ color: 'var(--stride-gray)' }}>
+              Release thoughts
+            </p>
+          </Link>
+        </div>
+      </div>
+
+      {/* Today's Battles */}
       <section>
-        <h3 className="text-lg font-semibold mb-3">Squad Activity</h3>
+        <h3 className="text-lg font-semibold mb-3">Today's Battles</h3>
         <div className="space-y-2">
           <Card className="p-3 flex items-start gap-3">
             <div className="text-2xl">🎉</div>
@@ -219,6 +221,91 @@ export function Home() {
           </Link>
         </div>
       </Card>
+
+      {/* Stress Level Update Dialog */}
+      <Dialog open={showStressDialog} onOpenChange={setShowStressDialog}>
+        <DialogContent className="max-w-md">
+          <DialogTitle>Update Stress Level</DialogTitle>
+          <DialogDescription className="sr-only">
+            Update your current stress level
+          </DialogDescription>
+          
+          <div className="py-6">
+            <div className="text-center mb-6">
+              <div className="text-6xl mb-3">{response.emoji}</div>
+              <p className="text-sm" style={{ color: 'var(--stride-gray)' }}>
+                How are you feeling right now?
+              </p>
+            </div>
+
+            {/* Stress Level Selector */}
+            <div className="space-y-3 mb-6">
+              {[
+                { level: 1, label: 'Minimal', color: '#27AE60', desc: 'Calm and in control' },
+                { level: 2, label: 'Mild', color: '#7BC4E8', desc: 'A little stressed but okay' },
+                { level: 3, label: 'Moderate', color: '#F2994A', desc: 'Definitely affecting my day' },
+                { level: 4, label: 'High', color: '#EB5757', desc: 'This is really hard right now' },
+              ].map((item) => (
+                <button
+                  key={item.level}
+                  onClick={() => handleStressUpdate(item.level)}
+                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                    stressLevel === item.level
+                      ? 'border-[var(--stride-blue)] bg-blue-50 scale-105'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-3 mb-1">
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4].map((dot) => (
+                        <div
+                          key={dot}
+                          className="w-3 h-3 rounded-full"
+                          style={{
+                            backgroundColor: dot <= item.level ? item.color : '#E0E0E0'
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <span className="font-semibold">{item.label}</span>
+                  </div>
+                  <p className="text-xs ml-12" style={{ color: 'var(--stride-gray)' }}>
+                    {item.desc}
+                  </p>
+                </button>
+              ))}
+            </div>
+
+            {/* Response Message */}
+            {stressLevel !== previousStressLevel && (
+              <div className="p-4 bg-blue-50 rounded-lg mb-4 animate-in fade-in duration-300">
+                <p className="text-sm font-medium mb-2">{response.title}</p>
+                <p className="text-sm" style={{ color: 'var(--stride-gray)' }}>
+                  {response.message}
+                </p>
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowStressDialog(false)}
+                className="flex-1 py-3 px-4 border-2 rounded-xl font-medium hover:bg-gray-50 transition-colors"
+              >
+                Done
+              </button>
+              {response.action && response.actionLink && (
+                <Link
+                  to={response.actionLink}
+                  className="flex-1 py-3 px-4 bg-[var(--stride-blue)] text-white rounded-xl font-medium hover:opacity-90 transition-opacity text-center"
+                  onClick={() => setShowStressDialog(false)}
+                >
+                  {response.action}
+                </Link>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

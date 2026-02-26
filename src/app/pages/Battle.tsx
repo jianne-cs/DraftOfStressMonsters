@@ -18,6 +18,45 @@ export function Battle() {
   ]);
   const [showVictory, setShowVictory] = useState(false);
 
+  // Personalized monster dialogue based on type
+  const getMonsterDialogue = () => {
+    const dialogues: Record<string, string[]> = {
+      procrastination: [
+        "Just one more video first...",
+        "You work better under pressure, remember?",
+        "Starting is the hard part... so don't start.",
+        "Tomorrow is soon enough.",
+      ],
+      anxiety: [
+        "They're all judging you.",
+        "What if everything goes wrong?",
+        "You're not good enough for this.",
+        "Everyone else is better than you.",
+      ],
+      overwhelm: [
+        "There's too much to do. Give up.",
+        "You can't handle all of this.",
+        "Every task is equally urgent!",
+        "You're drowning and no one cares.",
+      ],
+      sadness: [
+        "Nothing matters anyway.",
+        "Why even try?",
+        "You'll always feel this way.",
+        "No one understands you.",
+      ],
+      perfectionism: [
+        "It's not good enough yet.",
+        "They'll see all your flaws.",
+        "One mistake ruins everything.",
+        "You should have done better.",
+      ],
+    };
+
+    const lines = dialogues[monster.type] || dialogues.anxiety;
+    return lines[Math.floor(Math.random() * lines.length)];
+  };
+
   const useSkill = (skill: typeof skills[0]) => {
     const newMonsterHp = Math.max(0, monsterHp - skill.damage);
     setMonsterHp(newMonsterHp);
@@ -25,25 +64,39 @@ export function Battle() {
     const effectiveness = skill.effectiveness[monster.type] || 2;
     const stars = '⭐'.repeat(effectiveness);
     
+    // Personalized skill descriptions
+    const skillEffectDescriptions: Record<string, string> = {
+      '1': `You break the task into tiny steps. The ${monster.name} loses its grip!`,
+      '2': `You call on your squad. Together you weaken the ${monster.name}!`,
+      '3': `You challenge the negative thoughts. The ${monster.name} recoils!`,
+      '4': `You focus on what's in your control. The ${monster.name} fades!`,
+    };
+
     setBattleLog(prev => [
       ...prev,
       `You used ${skill.icon} ${skill.name}!`,
-      `Dealt ${skill.damage} damage! ${stars}`
+      skillEffectDescriptions[skill.id] || `The ${monster.name} takes ${skill.damage} damage!`,
+      `${stars} Effectiveness: ${effectiveness}/5`
     ]);
 
     if (newMonsterHp === 0) {
+      setBattleLog(prev => [
+        ...prev,
+        `💪 ${monster.name} has been defeated!`,
+        "You feel lighter and more in control."
+      ]);
       setTimeout(() => setShowVictory(true), 500);
       return;
     }
 
-    // Monster attacks back
+    // Monster attacks back with personalized dialogue
     setTimeout(() => {
       const monsterDamage = Math.floor(Math.random() * 15) + 5;
       setPlayerHp(prev => Math.max(0, prev - monsterDamage));
       setBattleLog(prev => [
         ...prev,
-        `${monster.name} attacks!`,
-        `You take ${monsterDamage} damage!`
+        `${monster.emoji} "${getMonsterDialogue()}"`,
+        `Your resolve wavers. -${monsterDamage} resilience`
       ]);
     }, 1000);
   };

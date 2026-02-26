@@ -10,6 +10,11 @@ import { SquadDetail } from "./pages/SquadDetail";
 import { MonsterDiary } from "./pages/MonsterDiary";
 import { CreateMonster } from "./pages/CreateMonster";
 import { MonsterProfile } from "./pages/MonsterProfile";
+import { QuickBreathing } from "./pages/QuickBreathing";
+import { QuickMoodCheck } from "./pages/QuickMoodCheck";
+import { QuickGrounding } from "./pages/QuickGrounding";
+import { QuickJournal } from "./pages/QuickJournal";
+import { Profile } from "./pages/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +31,11 @@ export const router = createBrowserRouter([
       { path: "community", Component: Community },
       { path: "squad/:squadId", Component: SquadDetail },
       { path: "learn", Component: Learn },
+      { path: "quick-breathing", Component: QuickBreathing },
+      { path: "quick-mood-check", Component: QuickMoodCheck },
+      { path: "quick-grounding", Component: QuickGrounding },
+      { path: "quick-journal", Component: QuickJournal },
+      { path: "profile", Component: Profile },
     ],
   },
 ]);

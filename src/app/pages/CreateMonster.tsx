@@ -3,58 +3,60 @@ import { useNavigate } from 'react-router';
 import { ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
 import { Card } from '../components/ui/card';
 
-type MonsterBodyType = 'anxiety-imp' | 'irritability-ogre' | 'sadness-shadow' | 'overwhelm-hydra';
-type MonsterFeature = 'sharp-teeth' | 'many-eyes' | 'heavy-chains' | 'fog-aura' | 'claws' | 'shadow-form' | 'multiple-heads' | 'invisible';
-type MonsterColor = 'red' | 'blue' | 'purple' | 'gray' | 'black';
+type MonsterBodyType = 'anxiety-imp' | 'irritability-ogre' | 'sadness-shadow' | 'overwhelm-hydra' | 'perfectionist-golem';
+type MonsterFeature = 'sharp-teeth' | 'many-eyes' | 'heavy-chains' | 'fog-aura' | 'claws' | 'shadow-form' | 'multiple-heads' | 'invisible' | 'pulsing-heart' | 'heavy-feet';
+type MonsterColor = 'red' | 'blue' | 'purple' | 'gray' | 'black' | 'orange' | 'green';
 
 const categories = [
-  { id: 'procrastination', name: 'Procrastination', emoji: '⏰' },
-  { id: 'anxiety', name: 'Anxiety', emoji: '😰' },
-  { id: 'sadness', name: 'Sadness', emoji: '😢' },
-  { id: 'irritability', name: 'Irritability', emoji: '😠' },
-  { id: 'overwhelm', name: 'Overwhelm', emoji: '🤯' },
-  { id: 'perfectionism', name: 'Perfectionism', emoji: '🎯' },
-  { id: 'comparison', name: 'Comparison', emoji: '👥' },
-  { id: 'custom', name: 'Custom', emoji: '✨' },
+  { id: 'anxiety', name: 'Anxiety', emoji: '😰', examples: 'Worry, Social Anxiety, Panic' },
+  { id: 'mood', name: 'Mood', emoji: '😢', examples: 'Sadness, Emptiness, Irritability' },
+  { id: 'motivation', name: 'Motivation', emoji: '⏰', examples: 'Procrastination, Burnout, Overwhelm' },
+  { id: 'self-concept', name: 'Self-Concept', emoji: '🎯', examples: 'Perfectionism, Self-Criticism, Imposter Syndrome' },
+  { id: 'custom', name: 'Custom', emoji: '✨', examples: 'Your unique struggle' },
 ];
 
 const bodyTypes: { id: MonsterBodyType; name: string; emoji: string; description: string }[] = [
-  { id: 'anxiety-imp', name: 'Anxiety Imp', emoji: '👹', description: 'Worry & racing thoughts' },
-  { id: 'irritability-ogre', name: 'Irritability Ogre', emoji: '👺', description: 'Frustration & anger' },
-  { id: 'sadness-shadow', name: 'Sadness Shadow', emoji: '👤', description: 'Low mood & isolation' },
+  { id: 'anxiety-imp', name: 'Anxiety Imp', emoji: '👹', description: 'Racing thoughts & restlessness' },
+  { id: 'irritability-ogre', name: 'Irritability Ogre', emoji: '👺', description: 'Frustration & explosive feelings' },
+  { id: 'sadness-shadow', name: 'Sadness Shadow', emoji: '👤', description: 'Low energy & feeling unseen' },
   { id: 'overwhelm-hydra', name: 'Overwhelm Hydra', emoji: '🐉', description: 'Pulled in many directions' },
+  { id: 'perfectionist-golem', name: 'Perfectionist Golem', emoji: '🗿', description: 'Rigid standards & fear of mistakes' },
 ];
 
 const features: { id: MonsterFeature; name: string; icon: string; description: string }[] = [
-  { id: 'sharp-teeth', name: 'Sharp Teeth', icon: '🦷', description: 'Critical self-talk' },
+  { id: 'sharp-teeth', name: 'Sharp Teeth', icon: '🦷', description: 'Harsh self-criticism' },
   { id: 'many-eyes', name: 'Many Eyes', icon: '👀', description: 'Feeling watched/judged' },
   { id: 'heavy-chains', name: 'Heavy Chains', icon: '⛓️', description: 'Exhaustion & weight' },
   { id: 'fog-aura', name: 'Fog Aura', icon: '🌫️', description: 'Brain fog & confusion' },
-  { id: 'claws', name: 'Claws', icon: '🔪', description: 'Sharp anxiety spikes' },
-  { id: 'shadow-form', name: 'Shadow Form', icon: '🌑', description: 'Hard to identify' },
-  { id: 'multiple-heads', name: 'Multiple Heads', icon: '👥', description: 'Too many things' },
-  { id: 'invisible', name: 'Invisible', icon: '👻', description: 'Others don\'t see it' },
+  { id: 'claws', name: 'Sharp Claws', icon: '🔪', description: 'Sudden anxiety spikes' },
+  { id: 'shadow-form', name: 'Shadow Form', icon: '🌑', description: 'Unidentifiable unease' },
+  { id: 'multiple-heads', name: 'Multiple Heads', icon: '👥', description: 'Juggling many things' },
+  { id: 'invisible', name: 'Invisible', icon: '👻', description: 'Feeling unheard/unseen' },
+  { id: 'pulsing-heart', name: 'Pulsing Heart', icon: '💓', description: 'Physical anxiety symptoms' },
+  { id: 'heavy-feet', name: 'Heavy Feet', icon: '🦶', description: 'Procrastination paralysis' },
 ];
 
 const colors: { id: MonsterColor; name: string; hex: string; emotion: string }[] = [
-  { id: 'red', name: 'Red', hex: '#EB5757', emotion: 'Anger & frustration' },
-  { id: 'blue', name: 'Blue', hex: '#2D9CDB', emotion: 'Sadness' },
-  { id: 'purple', name: 'Purple', hex: '#9B51E0', emotion: 'Anxiety' },
-  { id: 'gray', name: 'Gray', hex: '#828282', emotion: 'Numbness' },
-  { id: 'black', name: 'Black', hex: '#333333', emotion: 'Overwhelming' },
+  { id: 'red', name: 'Red', hex: '#EB5757', emotion: 'Anger & agitation' },
+  { id: 'blue', name: 'Blue', hex: '#2D9CDB', emotion: 'Sadness & melancholy' },
+  { id: 'purple', name: 'Purple', hex: '#9B51E0', emotion: 'Anxiety & unease' },
+  { id: 'gray', name: 'Gray', hex: '#828282', emotion: 'Numbness & emptiness' },
+  { id: 'black', name: 'Black', hex: '#333333', emotion: 'Overwhelming & consuming' },
+  { id: 'orange', name: 'Orange', hex: '#F2994A', emotion: 'Restless agitation' },
+  { id: 'green', name: 'Green', hex: '#27AE60', emotion: 'Envy & comparison' },
 ];
 
 const triggerOptions = [
-  'Opening laptop',
-  'Thinking about deadline',
-  'Seeing certain emails',
-  'Comparing to others',
-  'Social situations',
+  'Opening laptop/email',
+  'Thinking about deadlines',
+  'Sunday evenings',
+  'Monday mornings',
+  'Social media comparison',
   'Being alone',
-  'Morning wake-up',
-  'Before sleep',
-  'After meals',
-  'Receiving feedback',
+  'Crowded spaces',
+  'Unexpected changes',
+  'Criticism (real or anticipated)',
+  'Making decisions',
 ];
 
 const attackPatterns = [
