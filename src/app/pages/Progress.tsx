@@ -4,7 +4,9 @@ import { Flame, TrendingUp, Trophy, Clock, BookOpen } from 'lucide-react';
 import { monsters, squads } from '../data/mockData';
 import { Card } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import logo from 'figma:asset/d3f255a78e1c466f832592f023390aaf9040deba.png';
+import logo from '../../assets/stride-logo.png';  // ✅ TWO levels up
+
+console.log('Progress logo:', logo);  // Debug line
 
 export function Progress() {
   const [activeTab, setActiveTab] = useState('stats');

@@ -4,7 +4,10 @@ import { Swords, Wind, Smile, BookOpen, Users, Plus, ChevronRight } from 'lucide
 import { monsters, squads } from '../data/mockData';
 import { Card } from '../components/ui/card';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../components/ui/dialog';
-import logo from 'figma:asset/d3f255a78e1c466f832592f023390aaf9040deba.png';
+import logo from '../../assets/stride-logo.png';  // ✅ CORRECT - two levels up
+
+// Add this line right after imports to debug
+console.log('Logo path:', logo);
 
 export function Home() {
   const todayMonster = monsters[0];
